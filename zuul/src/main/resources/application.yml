@@ -1,0 +1,31 @@
+server:
+  port: 8401
+
+eureka:
+  instance:
+    hostname: localhost
+    port: 8001
+  client:
+    service-url:
+      defaultZone: http://${eureka.instance.hostname}:${eureka.instance.port}/eureka
+
+spring:
+  application:
+    name: zuulService
+
+white:
+  ip: 192.168.117.151;localhost
+
+zuul:
+  routes:
+    user-service1:
+      path: /infor/**
+      serviceId: informationLayer
+    user-service2:
+      path: /intent/**
+      serviceId: IntentService
+    user-service3:
+      path: /pary/**
+      serviceId: paryBuildingProc
+
+

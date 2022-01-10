@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.zznode.dao.TbRolesRulesMapper">
+  <resultMap id="BaseResultMap" type="org.zznode.entity.TbRolesRules">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="rolesID" jdbcType="BIGINT" property="rolesid" />
+    <result column="rulesID" jdbcType="BIGINT" property="rulesid" />
+    <result column="createTime" jdbcType="TIMESTAMP" property="createtime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, rolesID, rulesID, createTime
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from tb_roles_rules
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+
+  <select id="selectByRolesID" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from tb_roles_rules
+    where rolesID = #{rolesid,jdbcType=BIGINT}
+  </select>
+
+  <select id="selectByRolesAndRules" parameterType="org.zznode.entity.TbRolesRules" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from tb_roles_rules
+    where rolesID = #{rolesid,jdbcType=BIGINT}
+    and rulesID = #{rulesid,jdbcType=BIGINT}
+  </select>
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from tb_roles_rules
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+
+  <delete id="deleteByRolesID" parameterType="java.lang.Long">
+    delete from tb_roles_rules
+    where rolesID = #{rolesid,jdbcType=BIGINT}
+  </delete>
+
+  <insert id="insertOne" keyColumn="id" keyProperty="id" parameterType="org.zznode.entity.TbRolesRules" useGeneratedKeys="true">
+    insert into tb_roles_rules (id,rolesID, rulesID, createTime
+      )
+    values (#{id,jdbcType=BIGINT},#{rolesid,jdbcType=BIGINT}, #{rulesid,jdbcType=BIGINT}, #{createtime,jdbcType=TIMESTAMP}
+      )
+  </insert>
+  <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="org.zznode.entity.TbRolesRules" useGeneratedKeys="true">
+    insert into tb_roles_rules
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="rolesid != null">
+        rolesID,
+      </if>
+      <if test="rulesid != null">
+        rulesID,
+      </if>
+      <if test="createtime != null">
+        createTime,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="rolesid != null">
+        #{rolesid,jdbcType=BIGINT},
+      </if>
+      <if test="rulesid != null">
+        #{rulesid,jdbcType=BIGINT},
+      </if>
+      <if test="createtime != null">
+        #{createtime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="org.zznode.entity.TbRolesRules">
+    update tb_roles_rules
+    <set>
+      <if test="rolesid != null">
+        rolesID = #{rolesid,jdbcType=BIGINT},
+      </if>
+      <if test="rulesid != null">
+        rulesID = #{rulesid,jdbcType=BIGINT},
+      </if>
+      <if test="createtime != null">
+        createTime = #{createtime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="org.zznode.entity.TbRolesRules">
+    update tb_roles_rules
+    set rolesID = #{rolesid,jdbcType=BIGINT},
+      rulesID = #{rulesid,jdbcType=BIGINT},
+      createTime = #{createtime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

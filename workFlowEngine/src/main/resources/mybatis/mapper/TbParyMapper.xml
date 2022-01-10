@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.zznode.dao.TbParyMapper">
+
+    <resultMap id="BaseResultMap" type="org.zznode.entity.TbPary">
+        <id property="partid" column="partID" jdbcType="BIGINT"/>
+        <result property="fatherid" column="fatherID" jdbcType="BIGINT"/>
+        <result property="treelv" column="treeLV" jdbcType="INTEGER"/>
+        <result property="createtime" column="createTime" jdbcType="TIMESTAMP"/>
+        <result property="provepath" column="provePath" jdbcType="VARCHAR"/>
+        <result property="partname" column="partName" jdbcType="VARCHAR"/>
+        <result property="secondpartid" column="secondpartID" jdbcType="BIGINT"/>
+        <result property="reallv" column="realLV" jdbcType="VARCHAR"/>
+        <result property="secondlv" column="secondLv" jdbcType="BIGINT"/>
+        <result property="isdeleted" column="isDeleted" jdbcType="INTEGER"/>
+        <result property="createby" column="createBy" jdbcType="BIGINT"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        partID,fatherID,treeLV,
+        createTime,provePath,partName,
+        secondpartID,realLV,secondLv,
+        isDeleted,createBy
+    </sql>
+
+    <update id="deletePary">
+        update tb_pary
+        set isDeleted = 1
+        where partID = #{id}
+    </update>
+
+    <select id="getUserRoles" resultType="java.util.Map">
+        select tb_roles.*
+        from tb_roles,
+             tb_roles_users
+        where tb_roles.rolesID = tb_roles_users.rolesID
+          and tb_roles_users.userID = #{userId}
+    </select>
+
+    <select id="getTbPary" resultType="java.util.Map">
+        select tb_pary.* ,tb_users.userName
+        from tb_pary,
+        tb_users
+        where tb_users.userID = ${condition.userId}
+        and tb_pary.partID = tb_users.paryID
+        <if test="condition.organizationName != null and condition.organizationName != ''">
+            and tb_pary.partName like '%${condition.organizationName}%'
+        </if>
+        <if test="condition.startDate != null and condition.startDate != '' and condition.endDate != null and condition.endDate != ''">
+            and tb_pary.createTime between '${condition.startDate} 00:00:00' and '${condition.endDate} 23:59:59'
+        </if>
+    </select>
+
+    <select id="getTbParyMaps" resultType="java.util.Map">
+        select tb_pary.*,
+        tb_users.userName
+        from tb_pary,tb_users
+        where tb_users.userID = ${condition.userId}
+        and tb_pary.partID = tb_users.paryID
+        <if test="condition.organizationName != null and condition.organizationName != ''">
+            and tb_pary.partName like '%${condition.organizationName}%'
+        </if>
+        <if test="condition.startDate != null and condition.startDate != '' and condition.endDate != null and condition.endDate != ''">
+            and tb_pary.createTime between '${condition.startDate} 00:00:00' and '${condition.endDate} 23:59:59'
+        </if>
+    </select>
+
+
+    <resultMap id="BaseResultMap1" type="org.zznode.entity.TbParyTree">
+        <result column="partID" property="partId"/>
+        <result column="fatherID" property="fatherId"/>
+        <result column="partName" property="partName"/>
+        <result column="treeLV" property="treeLV"/>
+    </resultMap>
+    <resultMap id="NodeTreeResult" type="org.zznode.entity.TbParyTree"
+               extends="BaseResultMap1">
+        <collection property="childNode" column="{partId=partID,tlv=tlv}" ofType="org.zznode.entity.TbParyTree"
+                    javaType="java.util.ArrayList" select="nextNoteTree">
+
+        </collection>
+    </resultMap>
+
+    <sql id="Base_Column_List1">
+        partID,
+                fatherID,
+                treeLV,
+                partName,
+                case when '${tlv}' = '' then '' else '${tlv}' end as tlv
+    </sql>
+
+    <select id="nextNoteTree" resultMap="NodeTreeResult">
+        select
+        <include refid="Base_Column_List1"/>
+        from tb_pary
+        where fatherID=#{partId}
+        <if test="tlv != ''">
+            and treelv <![CDATA[<=]]> #{tlv}
+        </if>
+    </select>
+    <select id="paryTree" resultMap="NodeTreeResult">
+        select
+        <include refid="Base_Column_List1"/>
+        from tb_pary
+        where fatherID= 0
+    </select>
+</mapper>

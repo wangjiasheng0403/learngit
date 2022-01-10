@@ -1,0 +1,58 @@
+server:
+  port: 8602
+  context-path: /workflow
+spring:
+  application:
+    # 指定注册到eureka server上的服务名称
+    name: workFlowEngine
+  #####################################################################################################
+  # mysql 属性配置
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver
+#    url: jdbc:mysql://zzdnjs.mysql.polardb.rds.aliyuncs.com:3306/zydj?useSSL=false
+#    username: zydj
+#    password: Zydj123456!@#
+    url: jdbc:mysql://192.168.117.150:3306/zydj?useSSL=false
+    username: dangjian
+    password: Ahtr924!!
+  #####################################################################################################
+  http:
+    multipart:
+      max-file-size: 20MB
+      max-request-size: 20MB
+# mybatis-plus 配置
+mybatis-plus:
+  # 如果是放在src/main/java目录下 classpath:/com/yourpackage/*/mapper/*Mapper.xml
+  # 如果是放在resource目录 classpath:/mapper/*Mapper.xml
+  config-location: classpath:/mybatis/mybatis-config.xml
+  mapper-locations: classpath:/mybatis/mapper/*.xml
+  #实体扫描，多个package用逗号或者分号分隔
+  typeAliasesPackage: org.zznode.entity
+  global-config:
+    # 热加载mapper文件
+    refresh: true
+    db-config:
+      db-type: mysql
+#####################################################################################################
+eureka:
+  client:
+    service-url:
+      # 指定eureka server通信地址，注意/eureka/小尾巴不能少
+      defaultZone: http://localhost:8001/eureka/
+  instance:
+    # 是否注册IP到eureka server，如不指定或设为false，那就会注册主机名到eureka serverå
+    prefer-ip-address: true
+logging:
+  level:
+    org.zznode: DEBUG
+    root: INFO
+    org.hibernate: INFO
+    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
+    org.hibernate.type.descriptor.sql.BasicExtractor: TRACE
+    com.authorize: DEBUG
+upload:
+  showUrl: http://192.168.117.151:83/
+  saveUrl: /Users/lihao/
+#upload:
+#  showUrl: http://192.168.117.151:83/
+#  saveUrl: /Users/san/work/baihui/test/upload/

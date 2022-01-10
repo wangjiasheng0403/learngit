@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.zznode.dao.TbUsersMapper">
+
+    <resultMap id="BaseResultMap" type="org.zznode.entity.TbUsers">
+        <id property="userid" column="userID" jdbcType="BIGINT"/>
+        <result property="departid" column="departID" jdbcType="BIGINT"/>
+        <result property="password" column="passWord" jdbcType="VARCHAR"/>
+        <result property="account" column="account" jdbcType="VARCHAR"/>
+        <result property="username" column="userName" jdbcType="VARCHAR"/>
+        <result property="phone" column="phone" jdbcType="VARCHAR"/>
+        <result property="email" column="email" jdbcType="VARCHAR"/>
+        <result property="sex" column="sex" jdbcType="VARCHAR"/>
+        <result property="accountstatus" column="accountStatus" jdbcType="VARCHAR"/>
+        <result property="paryid" column="paryID" jdbcType="BIGINT"/>
+        <result property="createtime" column="createTime" jdbcType="TIMESTAMP"/>
+        <result property="nickname" column="nickname" jdbcType="VARCHAR"/>
+        <result property="departdutyid" column="departDutyID" jdbcType="BIGINT"/>
+        <result property="parydutyid" column="paryDutyID" jdbcType="BIGINT"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        userID,departID,passWord,
+        account,userName,phone,
+        email,sex,accountStatus,
+        paryID,createTime,nickname,
+        departDutyID,paryDutyID
+    </sql>
+
+    <!-- 运营账号分页列表-->
+    <select id="getPageList" resultType="map">
+        select
+        t1.UserID,
+        t1.Account,
+        t1.UserName,
+        t1.Phone,
+        t1.Email,
+        case t1.Sex
+        when 'M' then '男'
+        when 'W' then '女'
+        else '' end as Sex,
+        case t1.AccountStatus
+        when '1' then '正常'
+        else '锁定' end as AccountStatus,
+        t2.partID,
+        t2.partName
+        from tb_users t1
+        left join tb_pary t2
+        on t1.paryID = t2.partID
+        where 1=1
+        <if test="param.account!=null and param.account!=''">
+            and t1.Account like concat('%',#{param.account},'%')
+        </if>
+        <if test="param.username!=null and param.username!=''">
+            and t1.UserName like concat('%',#{param.username},'%')
+        </if>
+        <if test="param.phone!=null and param.phone!=''">
+            and t1.Phone like concat('%',#{param.phone},'%')
+        </if>
+        <if test="param.paryId!=null and param.paryId!=''">
+            and t1.paryID = #{param.paryId}
+        </if>
+        <if test="param.accountStatus!=null and param.accountStatus!=''">
+            and t1.AccountStatus = #{param.accountStatus}
+        </if>
+        order by t1.UserID desc
+    </select>
+
+    <!-- 通过主键查询明细 -->
+    <select id="selectInfoById" resultType="map">
+        select t1.UserID,
+               t1.Account,
+               t1.UserName,
+               t1.Phone,
+               t1.passWord,
+               t1.Email,
+               t1.Sex,
+               t1.AccountStatus,
+               GROUP_CONCAT(t3.RolesName) rolesName,
+               GROUP_CONCAT(t3.RolesID)   rolesId,
+               t4.partID,
+               t4.partName,
+               t5.departID,
+               t5.departName
+        from tb_users t1
+                 left join tb_roles_users t2
+                           on t1.UserID = t2.UserID
+                 left join tb_roles t3
+                           on t2.RolesID = t3.RolesID
+                 left join tb_pary t4
+                           on t1.paryID = t4.partID
+                 left join tb_department t5
+                                     on t1.departID = t5.departID
+        where t1.UserID = #{userId}
+        group by t1.UserID
+    </select>
+
+    <!--通过主键查询明细 -->
+    <select id="getParyByuserId" resultType="map">
+        select t1.UserID,
+               t2.partID,
+               t2.partName,
+               t2.FatherID,
+               t2.treeLV
+        from tb_users t1
+                 inner join tb_pary t2
+                            on t1.paryID = t2.partID
+        where t1.UserID = #{userId}
+    </select>
+
+    <update id="deleteUser">
+        update tb_users
+        set accountStatus = 2
+        where UserID = #{userId}
+    </update>
+
+    <select id="getUserNameAndDepartmentName" resultType="map">
+        select tb_users.UserName as userName,
+               tb_pary.partName  as partName
+        from tb_users,
+             tb_pary
+        where tb_users.UserID = #{userId}
+          and tb_pary.partID = tb_users.paryID
+    </select>
+
+    <select id="getOrgApprover" resultType="map">
+        select tb_users.UserID   as userId,
+               tb_users.UserName as userName,
+               tb_pary.partName  as orgName,
+               tb_roles.rolesName as roleName
+        from tb_roles_users,
+             tb_users,
+             tb_pary,
+             tb_roles
+        where tb_users.UserID = tb_roles_users.UserID
+        and tb_roles_users.rolesID = tb_roles.rolesID
+          and tb_roles_users.RolesID = #{rolesId}
+          and tb_users.paryID = #{orgId}
+          and tb_pary.partID = #{orgId}
+    </select>
+
+    <select id="getDepartmentApprover" resultType="map">
+        select tb_users.UserID          as userId,
+               tb_users.UserName        as userName,
+               tb_department.departName as orgName
+        from tb_roles_users,
+             tb_users,
+             tb_department
+        where tb_users.UserID = tb_roles_users.UserID
+          and tb_roles_users.RolesID = #{rolesId}
+          and tb_users.departID = #{departmentId}
+          and tb_department.departID = #{departmentId}
+    </select>
+
+    <select id="getUserOrgNameByUserId" resultType="map">
+        select tb_users.userName as userName, tb_department.departName as departName, tb_pary.partName as partName
+        from tb_users,
+             tb_department,
+             tb_pary
+        where tb_users.userID = #{userId}
+          and tb_department.departID = tb_users.departID
+          and tb_pary.partID = tb_users.paryID
+    </select>
+</mapper>

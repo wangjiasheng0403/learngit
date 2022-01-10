@@ -1,0 +1,16 @@
+server:
+  port: 8001
+
+eureka:
+  client:
+    service-url:
+      defaultZone:
+        #   http://${eureka.instance.hostname}:${server.port}/eureka
+        #这里存在一个坑，在eureka互相注册时，这里需要使用127.0.0.1，如使用localhost则不能完成互相注册。
+        http://127.0.0.1:8001/eureka
+    register-with-eureka: false
+    fetch-registry: false
+
+spring:
+  application:
+    name: eurekaService

@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.zznode.dao.TbWorkflowInfoMapper">
+
+    <resultMap id="BaseResultMap" type="org.zznode.entity.TbWorkflowInfo">
+        <id property="id" column="id" jdbcType="BIGINT"/>
+        <result property="orderno" column="orderNo" jdbcType="VARCHAR"/>
+        <result property="workflowname" column="workflowName" jdbcType="VARCHAR"/>
+        <result property="originator" column="originator" jdbcType="BIGINT"/>
+        <result property="createtime" column="createTime" jdbcType="TIMESTAMP"/>
+        <result property="workflowno" column="workflowNo" jdbcType="INTEGER"/>
+        <result property="currentworkfloworder" column="currentWorkflowOrder" jdbcType="INTEGER"/>
+        <result property="status" column="status" jdbcType="TINYINT"/>
+        <result property="workflowtype" column="workflowType" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,orderNo,workflowName,
+        originator,createTime,workflowNo,
+        currentWorkflowOrder,status,workflowType
+    </sql>
+
+    <select id="getPageListForOriginate" resultType="map">
+        select distinct tb_workflow_info.id                                           as workflowInfoId,
+                        tb_workflow_info.workflowName,
+                        date_format(tb_workflow_info.createTime, '%Y-%m-%d %H:%i:%s') as createTime,
+                        tb_users.UserName                                             as userName,
+                        tb_workflow_info.workflowType
+        from tb_workflow_info
+                 left join tb_users on tb_users.UserID = tb_workflow_info.originator
+        where tb_workflow_info.originator = #{userId}
+          and tb_workflow_info.status = 1
+    </select>
+
+    <select id="getPageListForBacklog" resultType="map">
+        select distinct tb_workflow_info.id                                           as workflowInfoId,
+                        tb_workflow_info.workflowName,
+                        date_format(tb_workflow_info.createTime, '%Y-%m-%d %H:%i:%s') as createTime,
+                        tb_users.UserName                                             as userName,
+                        tb_workflow_info.workflowType
+        from tb_workflow_log,
+             tb_workflow_info
+                 left join tb_users on tb_users.UserID = tb_workflow_info.originator
+        where tb_workflow_log.status = 0
+          and tb_workflow_log.UserID = #{userId}
+          and tb_workflow_info.id = tb_workflow_log.workflowInfoId
+          and tb_workflow_info.status = 1
+    </select>
+
+    <select id="getPageListForDone" resultType="map">
+        select distinct tb_workflow_info.id                                           as workflowInfoId,
+                        tb_workflow_info.workflowName,
+                        date_format(tb_workflow_info.createTime, '%Y-%m-%d %H:%i:%s') as createTime,
+                        tb_users.UserName                                             as userName,
+                        tb_workflow_info.workflowType
+        from tb_workflow_log,
+             tb_workflow_info
+                 left join tb_users on tb_users.UserID = tb_workflow_info.originator
+        where tb_workflow_log.status in (1, 2)
+          and tb_workflow_log.UserID = #{userId}
+          and tb_workflow_info.id = tb_workflow_log.workflowInfoId
+          and tb_workflow_info.status = 1
+    </select>
+
+    <select id="getPageListForFinished" resultType="map">
+        select distinct tb_workflow_info.id                                           as workflowInfoId,
+                        tb_workflow_info.workflowName,
+                        date_format(tb_workflow_info.createTime, '%Y-%m-%d %H:%i:%s') as createTime,
+                        tb_users.UserName                                             as userName,
+                        tb_workflow_info.workflowType
+        from (select tb_workflow_info.id
+              from tb_workflow_info
+              where tb_workflow_info.originator = #{userId}
+                and tb_workflow_info.status = 2
+              union
+              select tb_workflow_info.id
+              from tb_workflow_log,
+                   tb_workflow_info
+              where tb_workflow_log.UserID = #{userId}
+                and tb_workflow_info.id = tb_workflow_log.workflowInfoId
+                and tb_workflow_info.status = 2) as t,
+             tb_workflow_info
+                 left join tb_users on tb_users.UserID = tb_workflow_info.originator
+        where tb_workflow_info.id = t.id
+    </select>
+
+    <select id="getWorkflowInfoById" resultType="map">
+        select tb_workflow_info.id                                           as workflowInfoId,
+               tb_workflow_info.workflowName,
+               date_format(tb_workflow_info.createTime, '%Y-%m-%d %H:%i:%s') as createTime,
+               tb_users.userID,
+               tb_users.userName,
+               tb_department.departName,
+               tb_workflow_info.workflowType,
+               tb_workflow_info.currentWorkflowOrder,
+               tb_workflow_info.orderNo
+        from tb_workflow_info
+                 left join tb_users on tb_users.UserID = tb_workflow_info.originator
+                 left join tb_department on tb_department.DepartID = tb_users.DepartID
+        where id = #{id}
+        limit 1
+    </select>
+
+    <select id="getSaveScenesWorkFlowInfoByDataId" resultType="org.zznode.entity.TbWorkflowInfo">
+        select tb_workflow_info.*
+        from tb_workflow_info,
+             tb_workflow_model_change
+        where tb_workflow_model_change.dataId = #{dataId}
+          and tb_workflow_info.id = tb_workflow_model_change.workflowInfoId
+          and tb_workflow_info.status = 0
+        limit 1
+    </select>
+</mapper>

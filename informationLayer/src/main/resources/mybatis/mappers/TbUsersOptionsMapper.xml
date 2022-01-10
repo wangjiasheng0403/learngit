@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.zznode.dao.TbUsersOptionsMapper">
+
+    <resultMap id="BaseResultMap" type="org.zznode.entity.TbUsersOptions">
+        <id property="id" column="id" jdbcType="INTEGER"/>
+        <result property="userid" column="userID" jdbcType="INTEGER"/>
+        <result property="account" column="account" jdbcType="VARCHAR"/>
+        <result property="modifuserid" column="modifUserID" jdbcType="INTEGER"/>
+        <result property="modifaccount" column="modifAccount" jdbcType="VARCHAR"/>
+        <result property="optiontype" column="optionType" jdbcType="VARCHAR"/>
+        <result property="optionbymenu" column="optionByMenu" jdbcType="VARCHAR"/>
+        <result property="optionbyfield" column="optionByField" jdbcType="VARCHAR"/>
+        <result property="optioninfo" column="optionInfo" jdbcType="VARCHAR"/>
+        <result property="createtime" column="createTime" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id
+        ,userID,account,modifUserID,modifAccount
+        optionType,optionInfo,optionByField,optionInfo,createTime
+    </sql>
+
+    <select id="getPageList" resultType="map">
+        select
+            t1.id,
+            t1.account,
+            date_format(t1.createTime, '%Y-%m-%d %H:%i:%s') createTime,
+            t1.modifAccount,
+            t4.partName paryName,
+            t1.optionByMenu,
+            t1.optionType,
+            t1.optionByField,
+            t1.optionInfo,
+            CONCAT(t1.optionType,'->','(修改字段)',t1.optionByField,'->','(修改内容)',t1.optionInfo) optionContent
+        from tb_users_options t1
+        inner join tb_users t2
+        on t1.userID = t2.userID
+        inner join tb_users t3
+        on t1.modifUserID = t3.userID
+        inner join tb_pary t4
+        on t2.paryID = t4.partID
+        where t1.createTime between #{param.startTime} and #{param.endTime}
+        <if test="param.modifAccount!=null and param.modifAccount!=''">
+            and t1.modifAccount like concat('%',#{param.modifAccount},'%')
+        </if>
+    </select>
+</mapper>

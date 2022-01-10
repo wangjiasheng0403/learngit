@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.zznode.dao.TbWorkflowModelChangeMapper">
+
+    <resultMap id="BaseResultMap" type="org.zznode.entity.TbWorkflowModelChange">
+        <id property="id" column="id" jdbcType="BIGINT"/>
+        <result property="workflowinfoid" column="workflowInfoId" jdbcType="BIGINT"/>
+        <result property="datapath" column="dataPath" jdbcType="VARCHAR"/>
+        <result property="type" column="type" jdbcType="TINYINT"/>
+        <result property="dataname" column="dataName" jdbcType="VARCHAR"/>
+        <result property="datatype" column="dataType" jdbcType="TINYINT"/>
+        <result property="appendixpath" column="appendixPath" jdbcType="VARCHAR"/>
+        <result property="dataid" column="dataId" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,workflowInfoId,dataPath,
+        type,dataName,dataType,
+        appendixPath,dataId
+    </sql>
+
+    <select id="getAppendixByInfoId" resultType="map">
+        select tb_change_model.id as changeModelId,
+               tb_change_model.pictureId,
+               tb_change_model.mateId,
+               tb_change_model.matePath,
+               tb_change_model.mateType,
+               tb_model_picture_appendix.`describe`
+        from tb_change_model,
+             tb_workflow_model_change,
+             tb_data_resource,
+             tb_model_picture_appendix
+        where tb_change_model.workflowModelChangeId = #{modelChangeId}
+          and tb_workflow_model_change.id = tb_change_model.workflowModelChangeId
+          and tb_data_resource.dataID = tb_workflow_model_change.dataId
+          and tb_model_picture_appendix.dataId = tb_data_resource.baseModelId
+          and tb_model_picture_appendix.pictureId = tb_change_model.pictureId
+          and tb_model_picture_appendix.appendixId = tb_change_model.mateId
+        order by pictureId, mateId
+    </select>
+
+    <select id="getLastCompletedModelChangeIdByDataId" resultType="long">
+        select tb_workflow_model_change.id
+        from tb_workflow_model_change
+        where workflowInfoId = (select tb_workflow_info.id
+                                from tb_workflow_model_change,
+                                     tb_workflow_info
+                                where tb_workflow_model_change.dataId = #{dataId}
+                                  and tb_workflow_model_change.workflowInfoId = tb_workflow_info.id
+                                order by tb_workflow_info.id desc
+                                limit 1)
+    </select>
+
+    <select id="getByWorkflowInfoId" resultType="org.zznode.entity.TbWorkflowModelChange">
+        select *
+        from tb_workflow_model_change
+        where workflowInfoId = #{workflowInfoId}
+    </select>
+
+    <select id="getPicture" resultType="map">
+        select tb_model_picture.dataPictureID as pictureId, tb_model_picture.dataPicturePath as picturePath
+        from tb_model_picture,
+             tb_workflow_model_change,
+             tb_data_resource
+
+        where tb_model_picture.dataID = tb_data_resource.baseModelId
+          and tb_workflow_model_change.id = #{modelChangeId}
+          and tb_data_resource.dataID = tb_workflow_model_change.dataId
+
+    </select>
+</mapper>

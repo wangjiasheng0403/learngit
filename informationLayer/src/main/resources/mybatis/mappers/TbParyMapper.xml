@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.zznode.dao.TbParyMapper">
+  <resultMap id="BaseResultMap" type="org.zznode.entity.TbPary">
+    <id column="partID" jdbcType="BIGINT" property="partid" />
+    <result column="fatherID" jdbcType="BIGINT" property="fatherid" />
+    <result column="treeLV" jdbcType="INTEGER" property="treelv" />
+    <result column="createTime" jdbcType="TIMESTAMP" property="createtime" />
+    <result column="provePath" jdbcType="VARCHAR" property="provepath" />
+    <result column="partName" jdbcType="VARCHAR" property="partname" />
+    <result column="secondpartID" jdbcType="BIGINT" property="secondpartid" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    partID, fatherID, treeLV, createTime, provePath, partName, secondpartID
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from tb_pary
+    where partID = #{partid,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from tb_pary
+    where partID = #{partid,jdbcType=BIGINT}
+  </delete>
+  <insert id="insertOne" keyColumn="partID" keyProperty="partid" parameterType="org.zznode.entity.TbPary" useGeneratedKeys="true">
+    insert into tb_pary (fatherID, treeLV, createTime,
+      provePath, partName, secondpartID
+      )
+    values (#{fatherid,jdbcType=BIGINT}, #{treelv,jdbcType=INTEGER}, #{createtime,jdbcType=TIMESTAMP},
+      #{provepath,jdbcType=VARCHAR}, #{partname,jdbcType=VARCHAR}, #{secondpartid,jdbcType=BIGINT}
+      )
+  </insert>
+  <insert id="insertSelective" keyColumn="partID" keyProperty="partid" parameterType="org.zznode.entity.TbPary" useGeneratedKeys="true">
+    insert into tb_pary
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="fatherid != null">
+        fatherID,
+      </if>
+      <if test="treelv != null">
+        treeLV,
+      </if>
+      <if test="createtime != null">
+        createTime,
+      </if>
+      <if test="provepath != null">
+        provePath,
+      </if>
+      <if test="partname != null">
+        partName,
+      </if>
+      <if test="secondpartid != null">
+        secondpartID,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="fatherid != null">
+        #{fatherid,jdbcType=BIGINT},
+      </if>
+      <if test="treelv != null">
+        #{treelv,jdbcType=INTEGER},
+      </if>
+      <if test="createtime != null">
+        #{createtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="provepath != null">
+        #{provepath,jdbcType=VARCHAR},
+      </if>
+      <if test="partname != null">
+        #{partname,jdbcType=VARCHAR},
+      </if>
+      <if test="secondpartid != null">
+        #{secondpartid,jdbcType=BIGINT},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="org.zznode.entity.TbPary">
+    update tb_pary
+    <set>
+      <if test="fatherid != null">
+        fatherID = #{fatherid,jdbcType=BIGINT},
+      </if>
+      <if test="treelv != null">
+        treeLV = #{treelv,jdbcType=INTEGER},
+      </if>
+      <if test="createtime != null">
+        createTime = #{createtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="provepath != null">
+        provePath = #{provepath,jdbcType=VARCHAR},
+      </if>
+      <if test="partname != null">
+        partName = #{partname,jdbcType=VARCHAR},
+      </if>
+      <if test="secondpartid != null">
+        secondpartID = #{secondpartid,jdbcType=BIGINT},
+      </if>
+    </set>
+    where partID = #{partid,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="org.zznode.entity.TbPary">
+    update tb_pary
+    set fatherID = #{fatherid,jdbcType=BIGINT},
+      treeLV = #{treelv,jdbcType=INTEGER},
+      createTime = #{createtime,jdbcType=TIMESTAMP},
+      provePath = #{provepath,jdbcType=VARCHAR},
+      partName = #{partname,jdbcType=VARCHAR},
+      secondpartID = #{secondpartid,jdbcType=BIGINT}
+    where partID = #{partid,jdbcType=BIGINT}
+  </update>
+</mapper>

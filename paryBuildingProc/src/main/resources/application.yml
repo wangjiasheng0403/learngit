@@ -1,0 +1,39 @@
+server:
+  port: 8301
+
+spring:
+  application:
+    name: paryBuildingProc
+  redis:
+    database: 0
+    host: 127.0.0.1
+    port: 6379
+    password:
+    pool:
+      max-active: 8
+      max-wait: 1
+      max-idle: 8
+      min-idle: 0
+  # mysql 属性配置
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql://192.168.117.150:3306/zydj?useUnicode=true&characterEncoding=utf8&autoReconnect=true&rewriteBatchedStatements=TRUE&useSSL=false
+    username: dangjian
+    password: Ahtr924!!
+    #url: jdbc:mysql://192.168.117.150:3306/zydj?useSSL=false
+    #username: dangjian
+    #password: Ahtr924!!
+  #####################################################################################################
+eureka:
+  instance:
+    hostname: 127.0.0.1
+    port: 8001
+  client:
+    service-url:
+      defaultZone: http://127.0.0.1:8001/eureka
+logging:
+  level:
+    org.zznode: DEBUG
+
+login:
+  limit: 5

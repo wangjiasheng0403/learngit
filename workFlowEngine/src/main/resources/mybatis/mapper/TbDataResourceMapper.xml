@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.zznode.dao.TbDataResourceMapper">
+
+    <resultMap id="BaseResultMap" type="org.zznode.entity.TbDataResource">
+        <result property="dataid" column="dataID" jdbcType="VARCHAR"/>
+        <result property="createtime" column="createTime" jdbcType="TIMESTAMP"/>
+        <result property="datainfo" column="dataInfo" jdbcType="VARCHAR"/>
+        <result property="databelong" column="dataBelong" jdbcType="BIGINT"/>
+        <result property="datatype" column="dataType" jdbcType="TINYINT"/>
+        <result property="dataname" column="dataName" jdbcType="VARCHAR"/>
+        <result property="showtype" column="showType" jdbcType="VARCHAR"/>
+        <result property="datapath" column="dataPath" jdbcType="VARCHAR"/>
+        <result property="basemodelid" column="baseModelId" jdbcType="VARCHAR"/>
+        <result property="workflowcode" column="workFlowCode" jdbcType="VARCHAR"/>
+        <result property="imgpath" column="IMGPath" jdbcType="VARCHAR"/>
+        <result property="apriveorder" column="apriveOrder" jdbcType="INTEGER"/>
+        <result property="datastatus" column="dataStatus" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        dataID,createTime,dataInfo,
+        dataBelong,dataType,dataName,
+        showType,dataPath,baseModelId,
+        workFlowCode,IMGPath,apriveOrder,
+        dataStatus
+    </sql>
+
+    <select id="getScenes" resultType="map">
+        select dataID, dataName
+        from tb_data_resource
+        where tb_data_resource.dataBelong IS NULL
+        union
+        select dataID, dataName
+        from tb_data_resource,
+             tb_users
+        where tb_users.UserID = #{userId}
+          and tb_users.paryID = tb_data_resource.dataBelong
+    </select>
+</mapper>

@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.zznode.dao.TbUsersMapper">
+    <resultMap id="BaseResultMap" type="org.zznode.entity.TbUsers">
+        <id column="userID" jdbcType="BIGINT" property="userid"/>
+        <result column="departID" jdbcType="BIGINT" property="departid"/>
+        <result column="passWord" jdbcType="VARCHAR" property="password"/>
+        <result column="account" jdbcType="VARCHAR" property="account"/>
+        <result column="userName" jdbcType="VARCHAR" property="username"/>
+        <result column="phone" jdbcType="VARCHAR" property="phone"/>
+        <result column="email" jdbcType="VARCHAR" property="email"/>
+        <result column="sex" jdbcType="VARCHAR" property="sex"/>
+        <result column="accountStatus" jdbcType="VARCHAR" property="accountstatus"/>
+        <result column="paryID" jdbcType="BIGINT" property="paryid"/>
+        <result column="createTime" jdbcType="TIMESTAMP" property="createtime"/>
+        <result column="nickname" jdbcType="VARCHAR" property="nickname"/>
+        <result column="departDutyID" jdbcType="BIGINT" property="departdutyid"/>
+        <result column="paryDutyID" jdbcType="BIGINT" property="parydutyid"/>
+        <result column="portraitPath" jdbcType="VARCHAR" property="portraitpath"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        userID, departID, `passWord`, account, userName, phone, email, sex, accountStatus,
+    paryID, createTime, nickname, departDutyID, paryDutyID,portraitPath
+    </sql>
+    <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from tb_users
+        where userID = #{userid,jdbcType=BIGINT}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+        delete
+        from tb_users
+        where userID = #{userid,jdbcType=BIGINT}
+    </delete>
+    <insert id="insertOne" keyColumn="userID" keyProperty="userid" parameterType="org.zznode.entity.TbUsers"
+            useGeneratedKeys="true">
+        insert into tb_users (userID, departID, `passWord`, account,
+                              userName, phone, email,
+                              sex, accountStatus, paryID,
+                              createTime, nickname, departDutyID,
+                              paryDutyID, portraitpath)
+        values (#{userid,jdbcType=BIGINT}, #{departid,jdbcType=BIGINT}, #{password,jdbcType=VARCHAR},
+                #{account,jdbcType=VARCHAR},
+                #{username,jdbcType=VARCHAR}, #{phone,jdbcType=VARCHAR}, #{email,jdbcType=VARCHAR},
+                #{sex,jdbcType=VARCHAR}, #{accountstatus,jdbcType=VARCHAR}, #{paryid,jdbcType=BIGINT},
+                #{createtime,jdbcType=TIMESTAMP}, #{nickname,jdbcType=VARCHAR}, #{departdutyid,jdbcType=BIGINT},
+                #{parydutyid,jdbcType=BIGINT}, #{portraitpath,jdbcType=VARCHAR})
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="org.zznode.entity.TbUsers">
+        update tb_users
+        <set>
+            <if test="departid != null">
+                departID = #{departid,jdbcType=BIGINT},
+            </if>
+            <if test="password != null">
+                `passWord` = #{password,jdbcType=VARCHAR},
+            </if>
+            <if test="account != null">
+                account = #{account,jdbcType=VARCHAR},
+            </if>
+            <if test="username != null">
+                userName = #{username,jdbcType=VARCHAR},
+            </if>
+            <if test="phone != null">
+                phone = #{phone,jdbcType=VARCHAR},
+            </if>
+            <if test="email != null">
+                email = #{email,jdbcType=VARCHAR},
+            </if>
+            <if test="sex != null">
+                sex = #{sex,jdbcType=VARCHAR},
+            </if>
+            <if test="accountstatus != null">
+                accountStatus = #{accountstatus,jdbcType=VARCHAR},
+            </if>
+            <if test="paryid != null">
+                paryID = #{paryid,jdbcType=BIGINT},
+            </if>
+            <if test="createtime != null">
+                createTime = #{createtime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="nickname != null">
+                nickname = #{nickname,jdbcType=VARCHAR},
+            </if>
+            <if test="departdutyid != null">
+                departDutyID = #{departdutyid,jdbcType=BIGINT},
+            </if>
+            <if test="parydutyid != null">
+                paryDutyID = #{parydutyid,jdbcType=BIGINT},
+            </if>
+            <if test="portraitpath != null">
+                portraitPath = #{portraitpath,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where userID = #{userid,jdbcType=BIGINT}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="org.zznode.entity.TbUsers">
+        update tb_users
+        set departID      = #{departid,jdbcType=BIGINT},
+            `passWord`    = #{password,jdbcType=VARCHAR},
+            account       = #{account,jdbcType=VARCHAR},
+            userName      = #{username,jdbcType=VARCHAR},
+            phone         = #{phone,jdbcType=VARCHAR},
+            email         = #{email,jdbcType=VARCHAR},
+            sex           = #{sex,jdbcType=VARCHAR},
+            accountStatus = #{accountstatus,jdbcType=VARCHAR},
+            paryID        = #{paryid,jdbcType=BIGINT},
+            createTime    = #{createtime,jdbcType=TIMESTAMP},
+            nickname      = #{nickname,jdbcType=VARCHAR},
+            departDutyID  = #{departdutyid,jdbcType=BIGINT},
+            portraitPath  = #{portraitpath,jdbcType=VARCHAR},
+            paryDutyID    = #{parydutyid,jdbcType=BIGINT}
+        where userID = #{userid,jdbcType=BIGINT}
+    </update>
+
+    <select id="getUserPartIdAndSecondDepartId" resultType="map">
+        select tb_department.secondDepartID as secondDepartId, tb_department.partID as partyId
+        from tb_users,
+             tb_department
+        where userID = #{userId}
+          and tb_department.departID = tb_users.departID
+    </select>
+</mapper>

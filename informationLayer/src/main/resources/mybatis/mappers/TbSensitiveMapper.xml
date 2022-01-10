@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.zznode.dao.TbSensitiveMapper">
+
+    <resultMap id="BaseResultMap" type="org.zznode.entity.TbSensitive">
+        <id property="id" column="id" jdbcType="BIGINT"/>
+        <result property="sensitivity" column="sensitivity" jdbcType="VARCHAR"/>
+        <result property="sensitivitycause" column="sensitivityCause" jdbcType="VARCHAR"/>
+        <result property="createby" column="createBy" jdbcType="VARCHAR"/>
+        <result property="createtime" column="createTime" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,sensitivity,sensitivityCause,
+        createBy,createTime
+    </sql>
+
+    <select id="getSensitivity" resultType="string">
+        select sensitivity
+        from tb_sensitive
+    </select>
+</mapper>

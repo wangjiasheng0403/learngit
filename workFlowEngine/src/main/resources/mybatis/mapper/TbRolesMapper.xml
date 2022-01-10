@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.zznode.dao.TbRolesMapper">
+
+    <resultMap id="BaseResultMap" type="org.zznode.entity.TbRoles">
+        <id property="rolesid" column="rolesID" jdbcType="BIGINT"/>
+        <result property="rolesname" column="rolesName" jdbcType="VARCHAR"/>
+        <result property="createtime" column="createTime" jdbcType="TIMESTAMP"/>
+        <result property="descriptor" column="descriptor" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        rolesID,rolesName,createTime,
+        descriptor
+    </sql>
+</mapper>

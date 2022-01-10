@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.zznode.dao.TbDepartmentMapper">
+
+    <resultMap id="BaseResultMap" type="org.zznode.entity.TbDepartment">
+        <id property="departid" column="departID" jdbcType="BIGINT"/>
+        <result property="fatherid" column="fatherID" jdbcType="BIGINT"/>
+        <result property="lv" column="lv" jdbcType="INTEGER"/>
+        <result property="departname" column="departName" jdbcType="VARCHAR"/>
+        <result property="createtime" column="createTime" jdbcType="TIMESTAMP"/>
+        <result property="partid" column="partID" jdbcType="BIGINT"/>
+        <result property="partname" column="partName" jdbcType="VARCHAR"/>
+        <result property="seconddepartid" column="secondDepartID" jdbcType="BIGINT"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        departID,fatherID,lv,
+        departName,createTime,partID,
+        partName,secondDepartID
+    </sql>
+</mapper>

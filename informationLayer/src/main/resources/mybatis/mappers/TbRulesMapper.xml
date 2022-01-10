@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.zznode.dao.TbRulesMapper">
+  <resultMap id="BaseResultMap" type="org.zznode.entity.TbRules">
+    <id column="rulesID" jdbcType="BIGINT" property="rulesid" />
+    <result column="createTime" jdbcType="TIMESTAMP" property="createtime" />
+    <result column="descriptor" jdbcType="VARCHAR" property="descriptor" />
+    <result column="rulesName" jdbcType="VARCHAR" property="rulesname" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    rulesID, createTime, `descriptor`, rulesName
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from tb_rules
+    where rulesID = #{rulesid,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from tb_rules
+    where rulesID = #{rulesid,jdbcType=BIGINT}
+  </delete>
+  <insert id="insertOne" keyColumn="rulesID" keyProperty="rulesid" parameterType="org.zznode.entity.TbRules" useGeneratedKeys="true">
+    insert into tb_rules (createTime, `descriptor`, rulesName
+      )
+    values (#{createtime,jdbcType=TIMESTAMP}, #{descriptor,jdbcType=VARCHAR}, #{rulesname,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" keyColumn="rulesID" keyProperty="rulesid" parameterType="org.zznode.entity.TbRules" useGeneratedKeys="true">
+    insert into tb_rules
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="createtime != null">
+        createTime,
+      </if>
+      <if test="descriptor != null">
+        `descriptor`,
+      </if>
+      <if test="rulesname != null">
+        rulesName,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="createtime != null">
+        #{createtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="descriptor != null">
+        #{descriptor,jdbcType=VARCHAR},
+      </if>
+      <if test="rulesname != null">
+        #{rulesname,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="org.zznode.entity.TbRules">
+    update tb_rules
+    <set>
+      <if test="createtime != null">
+        createTime = #{createtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="descriptor != null">
+        `descriptor` = #{descriptor,jdbcType=VARCHAR},
+      </if>
+      <if test="rulesname != null">
+        rulesName = #{rulesname,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where rulesID = #{rulesid,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="org.zznode.entity.TbRules">
+    update tb_rules
+    set createTime = #{createtime,jdbcType=TIMESTAMP},
+      `descriptor` = #{descriptor,jdbcType=VARCHAR},
+      rulesName = #{rulesname,jdbcType=VARCHAR}
+    where rulesID = #{rulesid,jdbcType=BIGINT}
+  </update>
+</mapper>

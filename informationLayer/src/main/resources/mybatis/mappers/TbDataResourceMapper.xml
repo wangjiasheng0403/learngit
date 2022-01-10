@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.zznode.dao.TbDataResourceMapper">
+  <resultMap id="BaseResultMap" type="org.zznode.entity.TbDataResource">
+    <result column="dataID" jdbcType="VARCHAR" property="dataid" />
+    <result column="dataInfo" jdbcType="VARCHAR" property="datainfo" />
+    <result column="dataBelong" jdbcType="BIGINT" property="databelong" />
+    <result column="dataType" jdbcType="INTEGER" property="datatype" />
+    <result column="dataName" jdbcType="VARCHAR" property="dataname" />
+    <result column="showType" jdbcType="VARCHAR" property="showtype" />
+    <result column="dataPath" jdbcType="VARCHAR" property="datapath" />
+    <result column="baseModelId" jdbcType="VARCHAR" property="basemodelid" />
+    <result column="workFlowCode" jdbcType="VARCHAR" property="workflowcode" />
+    <result column="IMGPath" jdbcType="VARCHAR" property="imgpath" />
+    <result column="apriveOrder" jdbcType="INTEGER" property="apriveorder" />
+    <result column="dataStatus" jdbcType="INTEGER" property="datastatus" />
+    <result column="createTime" jdbcType="TIMESTAMP" property="createtime"/>
+    <result column="editOr" jdbcType="VARCHAR" property="editor"/>
+  </resultMap>
+  <sql id="Base_Column_List">
+    dataID, dataInfo, dataBelong, dataType, dataName, showType, dataPath,
+     baseModelId,workFlowCode,IMGPath,apriveOrder,dataStatus,createTime,editOr
+  </sql>
+  <select id="selectByDataBelong" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from tb_data_resource
+    where dataBelong = #{databelong,jdbcType=BIGINT}
+  </select>
+
+  <select id="selectByDataBelongAndShowType" parameterType="org.zznode.entity.TbDataResource" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from tb_data_resource
+    where dataBelong = #{databelong,jdbcType=BIGINT}
+    and showType = #{showtype,jdbcType=VARCHAR}
+  </select>
+
+  <insert id="insertOne" parameterType="org.zznode.entity.TbDataResource">
+    insert into tb_data_resource (dataID, dataInfo, dataBelong,
+      dataType, dataName, showType,
+      dataPath, baseModelId, workFlowCode,
+      IMGPath, apriveOrder, dataStatus,createTime,editOr
+      )
+    values (#{dataid,jdbcType=VARCHAR}, #{datainfo,jdbcType=VARCHAR}, #{databelong,jdbcType=BIGINT},
+      #{datatype,jdbcType=INTEGER}, #{dataname,jdbcType=VARCHAR}, #{showtype,jdbcType=VARCHAR},
+      #{datapath,jdbcType=VARCHAR}, #{basemodelid,jdbcType=VARCHAR}, #{workflowcode,jdbcType=VARCHAR},
+      #{imgpath,jdbcType=VARCHAR}, #{apriveorder,jdbcType=INTEGER}, #{datastatus,jdbcType=INTEGER}, #{createtime,jdbcType=TIMESTAMP},
+       #{editor,jdbcType=VARCHAR}
+      )
+  </insert>
+
+  <insert id="insertSelective" parameterType="org.zznode.entity.TbDataResource">
+    insert into tb_data_resource
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="dataid != null">
+        dataID,
+      </if>
+      <if test="datainfo != null">
+        dataInfo,
+      </if>
+      <if test="databelong != null">
+        dataBelong,
+      </if>
+      <if test="datatype != null">
+        dataType,
+      </if>
+      <if test="dataname != null">
+        dataName,
+      </if>
+      <if test="showtype != null">
+        showType,
+      </if>
+      <if test="datapath != null">
+        dataPath,
+      </if>
+      <if test="basemodelid != null">
+        baseModelId,
+      </if>
+      <if test="workflowcode != null">
+        workFlowCode,
+      </if>
+      <if test="imgpath != null">
+        IMGPath,
+      </if>
+      <if test="apriveorder != null">
+        apriveOrder,
+      </if>
+      <if test="datastatus != null">
+        dataStatus,
+      </if>
+      <if test="createtime != null">
+        createTime,
+      </if>
+      <if test="editor != null">
+        editOr,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="dataid != null">
+        #{dataid,jdbcType=VARCHAR},
+      </if>
+      <if test="datainfo != null">
+        #{datainfo,jdbcType=VARCHAR},
+      </if>
+      <if test="databelong != null">
+        #{databelong,jdbcType=BIGINT},
+      </if>
+      <if test="datatype != null">
+        #{datatype,jdbcType=INTEGER},
+      </if>
+      <if test="dataname != null">
+        #{dataname,jdbcType=VARCHAR},
+      </if>
+      <if test="showtype != null">
+        #{showtype,jdbcType=VARCHAR},
+      </if>
+      <if test="datapath != null">
+        #{datapath,jdbcType=VARCHAR},
+      </if>
+      <if test="basemodelid != null">
+        #{basemodelid,jdbcType=VARCHAR},
+      </if>
+      <if test="workflowcode != null">
+        #{workflowcode,jdbcType=VARCHAR},
+      </if>
+      <if test="imgpath != null">
+        #{imgpath,jdbcType=VARCHAR},
+      </if>
+      <if test="apriveorder != null">
+        #{apriveorder,jdbcType=INTEGER},
+      </if>
+      <if test="datastatus != null">
+        #{datastatus,jdbcType=INTEGER},
+      </if>
+      <if test="createtime != null">
+        #{createtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="editor != null">
+        #{editor,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List"/>
+    from tb_data_resource
+    where dataID=#{dataid,jdbcType=VARCHAR}
+  </select>
+
+  <insert id="insertSelectiveinfo" parameterType="org.zznode.entity.TbDataResource">
+    INSERT INTO tb_data_resource(
+    dataID,
+    dataInfo,
+	dataBelong,
+	dataType,
+	dataName,
+	showType,
+	dataPath,
+	baseModelId,
+	workFlowCode,
+	IMGPath,
+	apriveOrder,
+	dataStatus,
+	createTime,
+	editOr)
+		VALUES
+	(#{dataid},
+	#{datainfo},
+	#{databelong},
+	#{datatype},
+	#{dataname},
+	#{showtype},
+	#{datapath},
+	#{basemodelid},
+	#{workflowcode},
+	#{imgpath},
+	#{apriveorder},
+	#{datastatus},
+	#{createtime},
+	#{editor}));
+  </insert>
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from tb_data_resource
+    where dataID = #{dataid,jdbcType=VARCHAR}
+  </delete>
+
+  <update id="updateApriveOrder" >
+    update tb_data_resource
+    set apriveOrder=null
+  </update>
+
+  <update id="updateByPrimaryKey" parameterType="org.zznode.entity.TbDataResource">
+    update tb_data_resource
+    set createTime = #{createtime,jdbcType=TIMESTAMP},
+      dataInfo = #{datainfo,jdbcType=VARCHAR},
+      dataBelong = #{databelong,jdbcType=BIGINT},
+      dataType = #{datatype,jdbcType=INTEGER},
+      dataName = #{dataname,jdbcType=VARCHAR},
+      showType = #{showtype,jdbcType=VARCHAR},
+      dataPath = #{datapath,jdbcType=VARCHAR},
+      baseModelId = #{basemodelid,jdbcType=VARCHAR},
+      IMGPath = #{imgpath,jdbcType=VARCHAR},
+      dataStatus = #{datastatus,jdbcType=INTEGER},
+      editOr = #{editor,jdbcType=VARCHAR},
+      apriveOrder = #{apriveorder,jdbcType=INTEGER}
+    where dataID = #{dataid,jdbcType=VARCHAR}
+  </update>
+
+</mapper>

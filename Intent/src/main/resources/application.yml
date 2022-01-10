@@ -1,0 +1,18 @@
+server:
+  port: 8201
+
+eureka:
+  instance:
+    hostname: localhost
+    port: 8001
+  client:
+    service-url:
+      defaultZone: http://127.0.0.1:8001/eureka
+
+spring:
+  application:
+    name: IntentService
+
+upload:
+  showUrl: http://192.168.117.151:83
+  saveUrl: /root/ZYDJ/upload

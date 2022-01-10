@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.zznode.dao.TbSensitiveHistoryMapper">
+    <resultMap id="BaseResultMap" type="org.zznode.entity.TbSensitiveHistory">
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="checkType" jdbcType="SMALLINT" property="checktype"/>
+        <result column="sceneSource" jdbcType="VARCHAR" property="scenesource"/>
+        <result column="information" jdbcType="VARCHAR" property="information"/>
+        <result column="sensitiveContent" jdbcType="VARCHAR" property="sensitivecontent"/>
+        <result column="userID" jdbcType="BIGINT" property="userid"/>
+        <result column="checkTime" jdbcType="TIMESTAMP" property="checktime"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        id, checkType, sceneSource, information, sensitiveContent, userID, checkTime
+    </sql>
+    <select id="getTbSensitiveHistory" resultType="java.util.Map">
+        select tb_sensitive_history.*, tb_users.userName
+        from tb_sensitive_history,
+        tb_users
+        where tb_sensitive_history.userID = tb_users.userID
+        <if test="condition.checktype != 0">
+            and tb_sensitive_history.checkType = '${condition.checktype}'
+        </if>
+        <if test="condition.sensitivecontent !=null and condition.sensitivecontent !=''">
+            and tb_sensitive_history.sensitiveContent like '%${condition.sensitivecontent}%'
+        </if>
+        <if test="condition.startDate != null and condition.startDate != '' and condition.endDate != null and condition.endDate != ''">
+            and tb_sensitive_history.checkTime between '${condition.startDate} 00:00:00' and '${condition.endDate}
+            23:59:59'
+        </if>
+    </select>
+
+
+
+</mapper>

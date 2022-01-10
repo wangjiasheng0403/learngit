@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.zznode.dao.TbRolesUsersMapper">
+  <resultMap id="BaseResultMap" type="org.zznode.entity.TbRolesUsers">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="userID" jdbcType="BIGINT" property="userid" />
+    <result column="rolesID" jdbcType="BIGINT" property="rolesid" />
+    <result column="createTime" jdbcType="TIMESTAMP" property="createtime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, userID, rolesID, createTime
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from tb_roles_users
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from tb_roles_users
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <delete id="deleteByuserID" parameterType="java.lang.Long">
+    delete from tb_roles_users
+    where userID = #{userid,jdbcType=BIGINT}
+  </delete>
+
+  <delete id="deleteByrolesID" parameterType="java.lang.Long">
+    delete from tb_roles_users
+    where rolesID = #{rolesid,jdbcType=BIGINT}
+  </delete>
+
+  <insert id="insertOne" keyColumn="id" keyProperty="id" parameterType="org.zznode.entity.TbRolesUsers" useGeneratedKeys="true">
+    insert into tb_roles_users (id,userID, rolesID, createTime
+      )
+    values (#{id,jdbcType=BIGINT},#{userid,jdbcType=BIGINT}, #{rolesid,jdbcType=BIGINT}, #{createtime,jdbcType=TIMESTAMP}
+      )
+  </insert>
+  <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="org.zznode.entity.TbRolesUsers" useGeneratedKeys="true">
+    insert into tb_roles_users
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="userid != null">
+        userID,
+      </if>
+      <if test="rolesid != null">
+        rolesID,
+      </if>
+      <if test="createtime != null">
+        createTime,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="userid != null">
+        #{userid,jdbcType=BIGINT},
+      </if>
+      <if test="rolesid != null">
+        #{rolesid,jdbcType=BIGINT},
+      </if>
+      <if test="createtime != null">
+        #{createtime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="org.zznode.entity.TbRolesUsers">
+    update tb_roles_users
+    <set>
+      <if test="userid != null">
+        userID = #{userid,jdbcType=BIGINT},
+      </if>
+      <if test="rolesid != null">
+        rolesID = #{rolesid,jdbcType=BIGINT},
+      </if>
+      <if test="createtime != null">
+        createTime = #{createtime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="org.zznode.entity.TbRolesUsers">
+    update tb_roles_users
+    set userID = #{userid,jdbcType=BIGINT},
+      rolesID = #{rolesid,jdbcType=BIGINT},
+      createTime = #{createtime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

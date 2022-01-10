@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.zznode.dao.TbUserCollectMapper">
+  <resultMap id="BaseResultMap" type="org.zznode.entity.TbUserCollect">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="userID" jdbcType="BIGINT" property="userid" />
+    <result column="dataName" jdbcType="VARCHAR" property="dataname" />
+    <result column="dataPath" jdbcType="VARCHAR" property="datapath" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, userID, dataName, dataPath
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from tb_user_collect
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from tb_user_collect
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insertOne" keyColumn="id" keyProperty="id" parameterType="org.zznode.entity.TbUserCollect" useGeneratedKeys="true">
+    insert into tb_user_collect (id,userID, dataName, dataPath
+      )
+    values (#{id,jdbcType=BIGINT},#{userid,jdbcType=BIGINT}, #{dataname,jdbcType=VARCHAR}, #{datapath,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="org.zznode.entity.TbUserCollect" useGeneratedKeys="true">
+    insert into tb_user_collect
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="userid != null">
+        userID,
+      </if>
+      <if test="dataname != null">
+        dataName,
+      </if>
+      <if test="datapath != null">
+        dataPath,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="userid != null">
+        #{userid,jdbcType=BIGINT},
+      </if>
+      <if test="dataname != null">
+        #{dataname,jdbcType=VARCHAR},
+      </if>
+      <if test="datapath != null">
+        #{datapath,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="org.zznode.entity.TbUserCollect">
+    update tb_user_collect
+    <set>
+      <if test="userid != null">
+        userID = #{userid,jdbcType=BIGINT},
+      </if>
+      <if test="dataname != null">
+        dataName = #{dataname,jdbcType=VARCHAR},
+      </if>
+      <if test="datapath != null">
+        dataPath = #{datapath,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="org.zznode.entity.TbUserCollect">
+    update tb_user_collect
+    set userID = #{userid,jdbcType=BIGINT},
+      dataName = #{dataname,jdbcType=VARCHAR},
+      dataPath = #{datapath,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

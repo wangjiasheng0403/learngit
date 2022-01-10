@@ -1,0 +1,291 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.zznode.dao.TbRoleLogsMapper">
+    <resultMap id="BaseResultMap" type="org.zznode.entity.TbRoleLogs">
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="userID" jdbcType="BIGINT" property="userid"/>
+        <result column="dataID" jdbcType="VARCHAR" property="dataid"/>
+        <result column="dataName" jdbcType="VARCHAR" property="dataname"/>
+        <result column="cTime" jdbcType="TIMESTAMP" property="ctime"/>
+        <result column="liked" jdbcType="VARCHAR" property="liked"/>
+        <result column="collect" jdbcType="DECIMAL" property="collect"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        id, userID, dataID, dataName, cTime, liked, `collect`
+    </sql>
+    <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from tb_role_logs
+        where id = #{id,jdbcType=INTEGER}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+        delete
+        from tb_role_logs
+        where id = #{id,jdbcType=INTEGER}
+    </delete>
+    <insert id="insertOne" keyColumn="id" keyProperty="id" parameterType="org.zznode.entity.TbRoleLogs"
+            useGeneratedKeys="true">
+        insert into tb_role_logs (userID, dataID, dataName,
+                                  cTime, liked,
+                                  `collect`)
+        values (#{userid,jdbcType=BIGINT}, #{dataid,jdbcType=VARCHAR}, #{dataname,jdbcType=VARCHAR},
+                #{ctime,jdbcType=TIMESTAMP}, #{liked,jdbcType=VARCHAR},
+                #{collect,jdbcType=DECIMAL})
+    </insert>
+    <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="org.zznode.entity.TbRoleLogs"
+            useGeneratedKeys="true">
+        insert into tb_role_logs
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="userid != null">
+                userID,
+            </if>
+            <if test="dataid != null">
+                dataID,
+            </if>
+            <if test="dataname != null">
+                dataName,
+            </if>
+            <if test="ctime != null">
+                cTime,
+            </if>
+            <if test="liked != null">
+                liked,
+            </if>
+            <if test="collect != null">
+                `collect`,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="userid != null">
+                #{userid,jdbcType=BIGINT},
+            </if>
+            <if test="dataid != null">
+                #{dataid,jdbcType=VARCHAR},
+            </if>
+            <if test="dataname != null">
+                #{dataname,jdbcType=VARCHAR},
+            </if>
+            <if test="ctime != null">
+                #{ctime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="liked != null">
+                #{liked,jdbcType=VARCHAR},
+            </if>
+            <if test="collect != null">
+                #{collect,jdbcType=DECIMAL},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="org.zznode.entity.TbRoleLogs">
+        update tb_role_logs
+        <set>
+            <if test="userid != null">
+                userID = #{userid,jdbcType=BIGINT},
+            </if>
+            <if test="dataid != null">
+                dataID = #{dataid,jdbcType=VARCHAR},
+            </if>
+            <if test="dataname != null">
+                dataName = #{dataname,jdbcType=VARCHAR},
+            </if>
+            <if test="ctime != null">
+                cTime = #{ctime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="liked != null">
+                liked = #{liked,jdbcType=VARCHAR},
+            </if>
+            <if test="collect != null">
+                `collect` = #{collect,jdbcType=DECIMAL},
+            </if>
+        </set>
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+
+    <update id="updateByPrimaryKey" parameterType="org.zznode.entity.TbRoleLogs">
+        update tb_role_logs
+        set userID    = #{userid,jdbcType=BIGINT},
+            dataID    = #{dataid,jdbcType=VARCHAR},
+            dataName  = #{dataname,jdbcType=VARCHAR},
+            cTime     = #{ctime,jdbcType=TIMESTAMP},
+            liked     = #{liked,jdbcType=VARCHAR},
+            `collect` = #{collect,jdbcType=DECIMAL}
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+
+    <select id="getRoleLogs" resultType="map">
+        select tb_data_resource.dataID as dataId,max(tb_data_resource.dataName) as dataName, count(tb_role_logs.id) as clickCount
+        from tb_role_logs,
+        tb_data_resource
+        where tb_data_resource.dataID = tb_role_logs.dataID
+        and tb_role_logs.cTime between #{param.startTime} and #{param.endTime}
+        <if test="param.dataId != null and param.dataId != ''">
+            and tb_role_logs.dataID = #{param.dataId}
+        </if>
+        group by tb_role_logs.dataID
+        order by clickCount desc
+    </select>
+
+    <select id="getDataResource" resultType="map">
+        select tb_data_resource.dataID as dataId,tb_data_resource.dataName
+        from tb_data_resource
+        where dataBelong is not null
+    </select>
+
+
+    <select id="commentsDetail" resultType="map">
+        select date_format(tb_makes.cTime, '%Y-%m-%d %H:%i:%s') as makesTime,
+               tb_makes.nickname                                as nickname,
+               tb_makes.make_info                               as makeInfo
+        from tb_makes,
+             tb_role_logs
+        where tb_makes.nickname = #{param.nickname}
+          and tb_makes.ctime between #{param.startTime} and #{param.endTime}
+          and tb_role_logs.id = tb_makes.logsid
+          and tb_role_logs.dataID = #{param.dataId}
+    </select>
+
+    <resultMap id="CaseReferrerMap" type="org.zznode.entity.CaseReferrer">
+        <result column="dataid" jdbcType="VARCHAR" property="dataid" />
+        <result column="dataname" jdbcType="VARCHAR" property="dataname" />
+        <result column="datapath" jdbcType="VARCHAR" property="datapath" />
+        <result column="imgpath" jdbcType="VARCHAR" property="imgpath" />
+        <result column="acount" jdbcType="BIGINT" property="acount" />
+        <result column="average" jdbcType="DECIMAL" property="average" />
+    </resultMap>
+    <select id="getCaseReferrerResultList" parameterType="java.lang.Integer" resultMap="CaseReferrerMap">
+        select a.dataID, d.dataName, d.dataPath, d.IMGPath, a.acount, a.average
+FROM
+(
+SELECT r.dataID as dataID, count(*) as acount,
+    sum(r.collect)/count(r.collect) as average
+    FROM
+	    tb_role_logs r
+    WHERE
+				1 = 1
+    GROUP BY
+	    r.dataID
+    having acount >= #{provlimit,jdbcType=INTEGER}
+)a, tb_data_resource d
+where a.dataID = d.dataID and d.dataType = 2  and d.showtype =1
+order by average desc
+  </select>
+
+
+    <select id="visitingDetail" resultType="map">
+        select date_format(tb_role_logs.cTime, '%Y-%m-%d %H:%i:%s') as visitingTime,
+               tb_users.userName                                    as userName,
+               tb_pary.partName                                     as partyName
+        from tb_role_logs,
+             tb_users,
+             tb_pary
+        where tb_role_logs.cTime between #{param.startTime} and #{param.endTime}
+          and dataID = #{param.dataId}
+          and tb_users.userID = tb_role_logs.userID
+          and tb_pary.partID = tb_users.paryID
+        order by tb_role_logs.cTime
+    </select>
+
+    <!-- 终端用户修改记录-->
+    <select id="getRolesLogList" resultType="map">
+        select
+        CONCAT(#{param.startTime},'~',#{param.endTime}) as cTime,
+        min(t1.terminalType) as terminalType,
+        min(t2.dataID) as dataID,
+        min(t2.dataName) as dataName
+        from tb_role_logs t1
+        left join tb_data_resource t2
+        on t1.dataID = t2.dataID
+        where t1.cTime between #{param.startTime} and #{param.endTime}
+        <if test="param.dataName != null and param.dataName != ''">
+            and t1.dataName = #{param.dataName}
+        </if>
+        <if test="param.terminalType != null and param.terminalType != ''">
+            and t1.terminalType = #{param.terminalType}
+        </if>
+        group by t1.terminalType,t1.dataID
+    </select>
+
+    <!-- 登录场景明细-->
+    <select id="getLoginViewRecords" resultType="map">
+        select date_format(t1.cTime, '%Y-%m-%d %H:%i:%s') cTime,
+               t2.account,
+               t3.partName                                paryName,
+               t4.departName
+        from tb_role_logs t1
+                 left join tb_users t2
+                           on t1.userID = t2.userID
+                 left join tb_pary t3
+                           on t2.paryID = t3.partID
+                 left join tb_department t4
+                           on t2.departID = t4.departID
+        where t1.dataID = #{param.dataId}
+        <if test="param.terminalType != null and param.terminalType != ''">
+            and t1.terminalType = #{param.terminalType}
+        </if>
+          and t1.cTime between #{param.startTime} and #{param.endTime}
+
+
+    </select>
+
+    <!-- 场景内操作记录-->
+    <select id="getOperateRecords" resultType="map">
+        select *
+        from (
+                 SELECT t1.userID,
+                        t1.dataID,
+                        date_format(t1.cTime, '%Y-%m-%d %H:%i:%s')                         cTime,
+                        t2.account,
+                        t3.partName                                                        paryName,
+                        t4.departName,
+                        CONCAT(case when trim(t1.liked) != '' then '点赞' else '暂无点赞' end, '/',
+                               case when trim(t1.collect) != '' then '评分' else '暂无评分' end) opType
+                 FROM tb_role_logs t1
+                          LEFT JOIN tb_users t2 ON t1.userID = t2.userID
+                          LEFT JOIN tb_pary t3 ON t2.paryID = t3.partID
+                          LEFT JOIN tb_department t4 ON t2.departID = t4.departID
+                 WHERE t1.terminalType = #{param.terminalType}
+                   and t1.dataID = #{param.dataId}
+                   and t1.cTime between #{param.startTime} and #{param.endTime}
+                 union all
+                 select t1.userID,
+                        t1.dataID,
+                        date_format(t1.cTime, '%Y-%m-%d %H:%i:%s')                    cTime,
+                        t2.account,
+                        t3.partName                                                   paryName,
+                        t4.departName,
+                        case when ifnull(t5.plcount, 0) > 0 then '评论' else '暂无评论' end opType
+                 from tb_role_logs t1
+                          LEFT JOIN tb_users t2 ON t1.userID = t2.userID
+                          LEFT JOIN tb_pary t3 ON t2.paryID = t3.partID
+                          LEFT JOIN tb_department t4 ON t2.departID = t4.departID
+                          LEFT join (select count(1) as plcount, logsid from tb_makes group by logsid) t5
+                                    on t1.id = t5.logsid
+                 WHERE t1.terminalType = #{param.terminalType}
+                   and t1.dataID = #{param.dataId}
+                   and t1.cTime between #{param.startTime} and #{param.endTime}
+             ) tt
+        order by tt.userID, tt.dataID, tt.cTime
+    </select>
+
+
+    <select id="viewComments" resultType="map">
+        select date_format(min(tb_makes.cTime), '%Y-%m-%d %H:%i:%s') as visitingTime,
+               min(tb_makes.nickname)                                as nickaname,
+               min(tb_pary.partName)                                 as partName,
+               count(tb_makes.id)                               as makesCount
+        from tb_role_logs,
+             tb_makes,
+             tb_users,
+             tb_pary
+        where tb_role_logs.dataID = #{param.dataId}
+          and tb_makes.logsid = tb_role_logs.id
+          and tb_users.userID = tb_role_logs.userID
+          and tb_pary.partID = tb_users.paryID
+          and tb_makes.ctime between #{param.startTime} and #{param.endTime}
+        group by tb_makes.nickname
+    </select>
+
+
+
+</mapper>

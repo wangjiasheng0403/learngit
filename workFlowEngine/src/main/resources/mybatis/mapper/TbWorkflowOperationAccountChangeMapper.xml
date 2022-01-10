@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.zznode.dao.TbWorkflowOperationAccountChangeMapper">
+
+    <resultMap id="BaseResultMap" type="org.zznode.entity.TbWorkflowOperationAccountChange">
+        <id property="id" column="id" jdbcType="BIGINT"/>
+        <result property="operateuserid" column="operateUserId" jdbcType="BIGINT"/>
+        <result property="operateaccount" column="operateAccount" jdbcType="VARCHAR"/>
+        <result property="operatepwd" column="operatePwd" jdbcType="VARCHAR"/>
+        <result property="operatedepartid" column="operateDepartID" jdbcType="BIGINT"/>
+        <result property="username" column="userName" jdbcType="VARCHAR"/>
+        <result property="phone" column="phone" jdbcType="VARCHAR"/>
+        <result property="email" column="email" jdbcType="VARCHAR"/>
+        <result property="sex" column="sex" jdbcType="VARCHAR"/>
+        <result property="accountstatus" column="accountStatus" jdbcType="VARCHAR"/>
+        <result property="workflowinfoid" column="workflowInfoId" jdbcType="BIGINT"/>
+        <result property="type" column="type" jdbcType="INTEGER"/>
+        <result property="filepath" column="filePath" jdbcType="VARCHAR"/>
+        <result property="deleteContent" column="deleteContent" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,operateUserId,operateAccount,
+        operatePwd,operateDepartID,userName,
+        phone,email,sex,
+        accountStatus,workflowInfoId,type,
+        filePath
+    </sql>
+
+    <select id="getByWorkflowInfoId" resultType="map">
+        select tb_workflow_operation_account_change.id,
+               tb_workflow_operation_account_change.operateUserId,
+               tb_workflow_operation_account_change.operateAccount,
+               tb_workflow_operation_account_change.operatePwd,
+               tb_workflow_operation_account_change.operateDepartID,
+               tb_department.DepartName,
+               tb_workflow_operation_account_change.userName,
+               tb_workflow_operation_account_change.phone,
+               tb_workflow_operation_account_change.email,
+               tb_workflow_operation_account_change.sex,
+               tb_workflow_operation_account_change.accountStatus,
+               tb_workflow_operation_account_change.workflowInfoId,
+               tb_workflow_operation_account_change.type
+        from tb_workflow_operation_account_change
+                 left join tb_department
+                           on tb_department.DepartID = tb_workflow_operation_account_change.operateDepartID
+        where tb_workflow_operation_account_change.workflowInfoId = #{workflowInfoId}
+    </select>
+    
+    <select id="getSaveData" resultType="map">
+        select
+            t2.originator userId,
+            t2.orderNo,
+            t2.workflowName,
+            t1.filePath,
+            t1.deleteContent
+        from tb_workflow_operation_account_change t1
+        inner join tb_workflow_info t2
+        on t1.workflowInfoId = t2.id
+        where t1.operateUserId=#{deleteUserId}
+        and t2.`status`=0
+        and t2.workflowType=2
+    </select>
+</mapper>

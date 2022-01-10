@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.zznode.dao.TbWorkflowSerialMapper">
+
+    <resultMap id="BaseResultMap" type="org.zznode.entity.TbWorkflowSerial">
+        <result property="serialno" column="serialNo" jdbcType="INTEGER"/>
+        <result property="createdate" column="createDate" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        serialNo,createDate
+    </sql>
+
+    <select id="getMaxSerialNo" resultType="int">
+        select max(serialNo)
+        from tb_workflow_serial
+        where createDate = #{createDate}
+    </select>
+</mapper>

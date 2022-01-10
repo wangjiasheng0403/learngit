@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.zznode.dao.TbWorkflowLogMapper">
+
+    <resultMap id="BaseResultMap" type="org.zznode.entity.TbWorkflowLog">
+        <id property="id" column="id" jdbcType="BIGINT"/>
+        <result property="roleid" column="roleId" jdbcType="BIGINT"/>
+        <result property="userid" column="userId" jdbcType="BIGINT"/>
+        <result property="departid" column="departId" jdbcType="BIGINT"/>
+        <result property="status" column="status" jdbcType="INTEGER"/>
+        <result property="make" column="make" jdbcType="VARCHAR"/>
+        <result property="optime" column="opTime" jdbcType="TIMESTAMP"/>
+        <result property="workflowno" column="workflowNo" jdbcType="INTEGER"/>
+        <result property="workfloworder" column="workflowOrder" jdbcType="INTEGER"/>
+        <result property="workflowinfoid" column="workflowInfoId" jdbcType="BIGINT"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,roleId,userId,
+        departId,status,make,
+        opTime,workflowNo,workflowOrder,
+        workflowInfoId
+    </sql>
+
+    <select id="getLogListByWorkflowInfoId" resultType="map">
+        select tb_workflow_log.id                                       as workflowLogId,
+               tb_users.userName,
+               tb_users.userID,
+               date_format(tb_workflow_log.opTime, '%Y-%m-%d %H:%i:%s') as opTime,
+               tb_workflow_log.make,
+               tb_workflow_log.workflowNo,
+               tb_workflow_log.workflowOrder
+        from tb_workflow_log
+                 left join tb_users on tb_users.UserID = tb_workflow_log.UserID
+        where tb_workflow_log.workflowInfoId = #{workflowInfoId}
+        order by tb_workflow_log.id desc
+    </select>
+    <select id="getLastByWorkflowInfoIdAndWorkflowOrder" resultType="org.zznode.entity.TbWorkflowLog">
+        select *
+        from tb_workflow_log
+        where workflowInfoId = #{workflowInfoId}
+          and workflowOrder = #{workflowOrder}
+        order by id desc
+        limit 1
+    </select>
+</mapper>

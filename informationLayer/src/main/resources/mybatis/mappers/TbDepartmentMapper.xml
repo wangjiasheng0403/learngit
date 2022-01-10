@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.zznode.dao.TbDepartmentMapper">
+    <resultMap id="BaseResultMap" type="org.zznode.entity.TbDepartment">
+        <id column="departID" jdbcType="BIGINT" property="departid"/>
+        <result column="fatherID" jdbcType="BIGINT" property="fatherid"/>
+        <result column="lv" jdbcType="INTEGER" property="lv"/>
+        <result column="departName" jdbcType="VARCHAR" property="departname"/>
+        <result column="createTime" jdbcType="TIMESTAMP" property="createtime"/>
+        <result column="partID" jdbcType="BIGINT" property="partid"/>
+        <result column="partName" jdbcType="VARCHAR" property="partname"/>
+        <result column="secondDepartID" jdbcType="BIGINT" property="seconddepartid"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        departID, fatherID, lv, departName, createTime, partID, partName, secondDepartID
+    </sql>
+    <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from tb_department
+        where departID = #{departid,jdbcType=BIGINT}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+        delete
+        from tb_department
+        where departID = #{departid,jdbcType=BIGINT}
+    </delete>
+    <insert id="insertOne" keyColumn="departID" keyProperty="departid" parameterType="org.zznode.entity.TbDepartment"
+            useGeneratedKeys="true">
+        insert into tb_department (departID, fatherID, lv, departName,
+                                   createTime, partID, partName,
+                                   secondDepartID)
+        values (#{departid,jdbcType=BIGINT}, #{fatherid,jdbcType=BIGINT}, #{lv,jdbcType=INTEGER},
+                #{departname,jdbcType=VARCHAR},
+                #{createtime,jdbcType=TIMESTAMP}, #{partid,jdbcType=BIGINT}, #{partname,jdbcType=VARCHAR},
+                #{seconddepartid,jdbcType=BIGINT})
+    </insert>
+    <insert id="insertSelective" keyColumn="departID" keyProperty="departid"
+            parameterType="org.zznode.entity.TbDepartment" useGeneratedKeys="true">
+        insert into tb_department
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="fatherid != null">
+                fatherID,
+            </if>
+            <if test="lv != null">
+                lv,
+            </if>
+            <if test="departname != null">
+                departName,
+            </if>
+            <if test="createtime != null">
+                createTime,
+            </if>
+            <if test="partid != null">
+                partID,
+            </if>
+            <if test="partname != null">
+                partName,
+            </if>
+            <if test="seconddepartid != null">
+                secondDepartID,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="fatherid != null">
+                #{fatherid,jdbcType=BIGINT},
+            </if>
+            <if test="lv != null">
+                #{lv,jdbcType=INTEGER},
+            </if>
+            <if test="departname != null">
+                #{departname,jdbcType=VARCHAR},
+            </if>
+            <if test="createtime != null">
+                #{createtime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="partid != null">
+                #{partid,jdbcType=BIGINT},
+            </if>
+            <if test="partname != null">
+                #{partname,jdbcType=VARCHAR},
+            </if>
+            <if test="seconddepartid != null">
+                #{seconddepartid,jdbcType=BIGINT},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="org.zznode.entity.TbDepartment">
+        update tb_department
+        <set>
+            <if test="fatherid != null">
+                fatherID = #{fatherid,jdbcType=BIGINT},
+            </if>
+            <if test="lv != null">
+                lv = #{lv,jdbcType=INTEGER},
+            </if>
+            <if test="departname != null">
+                departName = #{departname,jdbcType=VARCHAR},
+            </if>
+            <if test="createtime != null">
+                createTime = #{createtime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="partid != null">
+                partID = #{partid,jdbcType=BIGINT},
+            </if>
+            <if test="partname != null">
+                partName = #{partname,jdbcType=VARCHAR},
+            </if>
+            <if test="seconddepartid != null">
+                secondDepartID = #{seconddepartid,jdbcType=BIGINT},
+            </if>
+        </set>
+        where departID = #{departid,jdbcType=BIGINT}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="org.zznode.entity.TbDepartment">
+        update tb_department
+        set fatherID       = #{fatherid,jdbcType=BIGINT},
+            lv             = #{lv,jdbcType=INTEGER},
+            departName     = #{departname,jdbcType=VARCHAR},
+            createTime     = #{createtime,jdbcType=TIMESTAMP},
+            partID         = #{partid,jdbcType=BIGINT},
+            partName       = #{partname,jdbcType=VARCHAR},
+            secondDepartID = #{seconddepartid,jdbcType=BIGINT}
+        where departID = #{departid,jdbcType=BIGINT}
+    </update>
+
+    <select id="getDepList" resultType="map">
+        select a1.*,
+        IF(tb_depart_relation.visitParyID is not null or a1.partId = #{partyId}, true,
+        false) as isAuth
+        from (
+        select t1.departID as departId,
+        t1.fatherID as fatherId,
+        t1.lv,
+        t1.departName as departName,
+        t1.partID as partId,
+        t1.partName
+        from tb_department t1,
+        tb_department t2
+        <if test="type==0">
+            where t2.secondDepartID = #{secondDepartId}
+        </if>
+        <if test="type==1">
+            where t2.secondDepartID != #{secondDepartId}
+        </if>
+        and t1.departID = t2.fatherID
+        and t2.lv = 2
+        ) as a1
+        left join tb_depart_relation on tb_depart_relation.visitParyID = a1.partId
+        and tb_depart_relation.paryID = #{partyId}
+        union
+        select a1.*,
+        IF(tb_depart_relation.visitParyID is not null or a1.partId = #{partyId}, true,
+        false) as isAuth
+        from (select departID as departId,
+        fatherID as fatherId,
+        lv,
+        departName as departName,
+        partID as partId,
+        partName
+        from tb_department
+        <if test="type == 0">where secondDepartID = #{secondDepartId}</if>
+        <if test="type == 1">where secondDepartID != #{secondDepartId}</if>
+        ) as a1
+        left join tb_depart_relation on tb_depart_relation.visitParyID = a1.partId
+        and tb_depart_relation.paryID = #{partyId}
+        order by lv, partID
+    </select>
+
+    <select id="getAllDepList" resultType="map">
+        select a1.*,
+               IF(tb_depart_relation.visitParyID is not null or a1.partId = #{partyId}, true,
+                  false) as isAuth
+        from (select departID   as departId,
+                     fatherID   as fatherId,
+                     lv,
+                     departName as departName,
+                     partID     as partId,
+                     partName
+              from tb_department
+             ) as a1
+                 left join tb_depart_relation on tb_depart_relation.visitParyID = a1.partId
+            and tb_depart_relation.paryID = #{partyId}
+        order by lv, partID
+    </select>
+</mapper>
+
